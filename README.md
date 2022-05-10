@@ -5,17 +5,18 @@ shell
 ## Installation
 
 ```sh
-npm install react-native-shell
+yarn add react-native-shell
 ```
 
 ## Usage
 
 ```js
-import { multiply } from "react-native-shell";
-
-// ...
-
-const result = await multiply(3, 7);
+try {
+    var r=await userShellSlice(`whoami`)
+    console.log(r)
+} catch (e:any) {
+    console.log(e.toString())
+}
 ```
 
 ## Contributing
