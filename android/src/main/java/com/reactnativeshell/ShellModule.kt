@@ -4,21 +4,49 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
+import java.io.InputStream
+import java.io.OutputStream
+import java.nio.charset.Charset
 
-class ShellModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class ShellModule(reactContext: ReactApplicationContext) :
+    ReactContextBaseJavaModule(reactContext) {
 
     override fun getName(): String {
         return "Shell"
     }
 
-    // Example method
-    // See https://reactnative.dev/docs/native-modules-android
     @ReactMethod
-    fun multiply(a: Int, b: Int, promise: Promise) {
-    
-      promise.resolve(a * b)
-    
+    fun shell(root:Boolean,command: String, promise: Promise) {
+        var process: Process? = null
+        var outputStream: OutputStream?=null
+        var inputStream: InputStream?=null
+        var errorStream: InputStream?=null
+        try {
+            var process = Runtime.getRuntime().exec(if(root) "su" else "sh")
+            outputStream = process?.outputStream
+            inputStream = process?.inputStream
+            errorStream = process?.errorStream
+            outputStream?.write(command.toByteArray())
+            outputStream?.write("\n".toByteArray());
+            outputStream?.flush()
+            outputStream?.close()
+            process?.waitFor()
+            if (process?.exitValue() != 0) {
+                var r = errorStream?.readBytes()!!.toString(Charset.defaultCharset())
+                promise.reject(r)
+            } else {
+                var bs = inputStream?.readBytes()
+                var r = bs?.toString(Charset.defaultCharset())
+                promise.resolve(r)
+            }
+        } catch (e: Exception) {
+            promise.reject(e)
+        } finally {
+            errorStream?.close()
+            inputStream?.close()
+            if (process != null) {
+                process?.destroy()
+            }
+        }
     }
-
-    
 }
