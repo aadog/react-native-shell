@@ -18,7 +18,11 @@ export const Shell = NativeModules.Shell
   );
 
 export async function rootShell(cmd:string):Promise<string>{
-  return Shell.shell(true,cmd)
+    var r=await Shell.shell(true,cmd)
+    if(r.endsWith("\n")){
+        return r.slice(0,r.length-1)
+    }
+    return r
 }
 export async function rootShellSlice(cmd:string):Promise<string[]>{
     var r=await rootShell(cmd)
@@ -26,10 +30,14 @@ export async function rootShellSlice(cmd:string):Promise<string[]>{
         return []
     }
     var fixR=r.split("\n")
-    return fixR.slice(0,fixR.length-1)
+    return fixR
 }
-export function userShell(cmd:string):string{
-    return Shell.shell(false,cmd)
+export async function userShell(cmd:string):Promise<string>{
+    var r=await Shell.shell(false,cmd)
+    if(r.endsWith("\n")){
+        return r.slice(0,r.length-1)
+    }
+    return r
 }
 export async function userShellSlice(cmd:string):Promise<string[]>{
     var r=await userShell(cmd)
@@ -37,5 +45,5 @@ export async function userShellSlice(cmd:string):Promise<string[]>{
         return []
     }
     var fixR=r.split("\n")
-    return fixR.slice(0,fixR.length-1)
+    return fixR
 }
