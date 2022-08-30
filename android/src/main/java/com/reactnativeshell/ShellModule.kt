@@ -56,7 +56,7 @@ class ShellModule(reactContext: ReactApplicationContext) :
         }
     }
     @ReactMethod
-    fun shellRaw(root:Boolean,command: String, promise: Promise) {
+    fun shellRaw(command: String, promise: Promise) {
         var process: Process? = null
         var outputStream: OutputStream?=null
         var inputStream: InputStream?=null
