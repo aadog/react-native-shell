@@ -25,7 +25,7 @@ class ShellModule(reactContext: ReactApplicationContext) :
         if(root==false){
             sCommand="sh"
         }
-        
+
         try {
             var process = Runtime.getRuntime().exec(sCommand)
             outputStream = process?.outputStream
