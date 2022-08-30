@@ -21,15 +21,61 @@ class ShellModule(reactContext: ReactApplicationContext) :
         var outputStream: OutputStream?=null
         var inputStream: InputStream?=null
         var errorStream: InputStream?=null
+        var sCommand="su"
+        if(!root){
+            sCommand="sh"
+        }
+
+        sCommand="${sCommand} -c \"${command}\""
         try {
-            var process = Runtime.getRuntime().exec(if(root) "su" else "sh")
-            outputStream = process?.outputStream
+            var process = Runtime.getRuntime().exec(command)
+//            outputStream = process?.outputStream
             inputStream = process?.inputStream
             errorStream = process?.errorStream
-            outputStream?.write(command.toByteArray())
-            outputStream?.write("\n".toByteArray());
-            outputStream?.flush()
-            outputStream?.close()
+//            outputStream?.write(command.toByteArray())
+//            outputStream?.write("\n".toByteArray());
+//            outputStream?.flush()
+//            outputStream?.close()
+            process?.waitFor()
+            if (process?.exitValue() != 0) {
+                var r = errorStream?.readBytes()!!.toString(Charset.defaultCharset())
+                promise.reject(r)
+            } else {
+                var bs = inputStream?.readBytes()
+                var r = bs?.toString(Charset.defaultCharset())
+                promise.resolve(r)
+            }
+        } catch (e: Exception) {
+            promise.reject(e)
+        } finally {
+            errorStream?.close()
+            inputStream?.close()
+            if (process != null) {
+                process?.destroy()
+            }
+        }
+    }
+    @ReactMethod
+    fun shellRaw(root:Boolean,command: String, promise: Promise) {
+        var process: Process? = null
+        var outputStream: OutputStream?=null
+        var inputStream: InputStream?=null
+        var errorStream: InputStream?=null
+        var sCommand="su"
+        if(!root){
+            sCommand="sh"
+        }
+
+        sCommand="${sCommand} \"${command}\""
+        try {
+            var process = Runtime.getRuntime().exec(command)
+//            outputStream = process?.outputStream
+            inputStream = process?.inputStream
+            errorStream = process?.errorStream
+//            outputStream?.write(command.toByteArray())
+//            outputStream?.write("\n".toByteArray());
+//            outputStream?.flush()
+//            outputStream?.close()
             process?.waitFor()
             if (process?.exitValue() != 0) {
                 var r = errorStream?.readBytes()!!.toString(Charset.defaultCharset())
