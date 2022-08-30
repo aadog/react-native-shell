@@ -22,7 +22,7 @@ class ShellModule(reactContext: ReactApplicationContext) :
         var inputStream: InputStream?=null
         var errorStream: InputStream?=null
         var sCommand="su"
-        if(!root){
+        if(root==false){
             sCommand="sh"
         }
 
@@ -62,7 +62,7 @@ class ShellModule(reactContext: ReactApplicationContext) :
         var inputStream: InputStream?=null
         var errorStream: InputStream?=null
         var sCommand="su"
-        if(!root){
+        if(root==false){
             sCommand="sh"
         }
 
