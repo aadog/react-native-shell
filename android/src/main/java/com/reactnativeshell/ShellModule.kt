@@ -26,9 +26,9 @@ class ShellModule(reactContext: ReactApplicationContext) :
             sCommand="sh"
         }
 
-        sCommand="${sCommand} -c ${command}"
+        sCommand="${sCommand} -c \"${command}\""
         try {
-            var process = Runtime.getRuntime().exec(command)
+            var process = Runtime.getRuntime().exec(sCommand)
 //            outputStream = process?.outputStream
             inputStream = process?.inputStream
             errorStream = process?.errorStream
@@ -61,15 +61,10 @@ class ShellModule(reactContext: ReactApplicationContext) :
         var outputStream: OutputStream?=null
         var inputStream: InputStream?=null
         var errorStream: InputStream?=null
-        var sCommand="su"
-        if(root==false){
-            sCommand="sh"
-        }
+        var sCommand=command
 
-        sCommand="${sCommand} ${command}"
-        println(sCommand)
         try {
-            var process = Runtime.getRuntime().exec(command)
+            var process = Runtime.getRuntime().exec(sCommand)
 //            outputStream = process?.outputStream
             inputStream = process?.inputStream
             errorStream = process?.errorStream
