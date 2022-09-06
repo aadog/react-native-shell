@@ -64,13 +64,13 @@ class ShellModule(reactContext: ReactApplicationContext) :
 
         try {
             var process = Runtime.getRuntime().exec(sCommand)
-//            outputStream = process?.outputStream
+            outputStream = process?.outputStream
             inputStream = process?.inputStream
             errorStream = process?.errorStream
 //            outputStream?.write(command.toByteArray())
 //            outputStream?.write("\n".toByteArray());
-//            outputStream?.flush()
-//            outputStream?.close()
+            outputStream?.flush()
+            outputStream?.close()
             process?.waitFor()
             if (process?.exitValue() != 0) {
                 var r = errorStream?.readBytes()!!.toString(Charset.defaultCharset())
